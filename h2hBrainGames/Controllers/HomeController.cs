@@ -10,6 +10,7 @@ namespace h2hBrainGames.Controllers
     {
         public ActionResult Index()
         {
+            // TEST OF GITHUB
             return View();
         }
 
