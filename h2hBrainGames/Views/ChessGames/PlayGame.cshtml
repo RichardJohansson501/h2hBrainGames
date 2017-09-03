@@ -1,0 +1,231 @@
+﻿@model h2hBrainGames.ViewModels.PlayChessGame
+
+
+@{
+    ViewBag.Title = "StartGame";
+    string[] rowLabel = new string[] { "A", "B", "C", "D", "E", "F", "G", "H" };
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h4>Game info</h4>
+        </div>
+
+        <div style="background-color:blanchedalmond" class="col-md-8">
+            <br />
+            <br />
+            <br />
+            <div class="row">             
+                <div class="boardFrameColor col-md-offset-1 col-md-1 col-sm-offset-1 col-sm-1 col-xs-offset-1 col-xs-1">
+                    <p class="frameTextHorizontal">*</p>
+                </div>
+                @{
+                    for (int column = 1; column < 9; column++)
+                    {
+                        <div class="boardFrameColor col-md-1 col-sm-1 col-xs-1">
+                            <p class="frameTextHorizontal">@column</p>
+                        </div>
+                    }
+                }
+                <div class="boardFrameColor col-md-1 col-sm-1 col-xs-1">
+                    <p class="frameTextHorizontal">*</p>
+                </div>
+            </div>
+            
+            
+            @{
+                for (int i = 0; i < 8; i++)
+                {
+                    <div class="row">
+                        <div class="boardFrameColor col-md-offset-1 col-md-1 col-sm-offset-1 col-sm-1 col-xs-offset-1 col-xs-1">
+                            <p class="frameTextVertical">@rowLabel[7 - i]</p>
+                        </div>
+
+                        @{
+                            for (int j = 0; j < 8; j++)
+                            {
+                                var srcStr = "/Pics/ChessGame/";
+                                srcStr += (Model.ChessSquare[7 - i, j].presentPiece).ToString();
+                                srcStr += ".png";
+
+                                if (Model.ChessSquare[7 - i, j].squareColor.ToString() == "Black")
+                                {
+                                    <div class="blackSquareColor col-sm-1 col-md-1 col-xs-1">
+                                        <img class="squarePic" src=@srcStr />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="whiteSquareColor col-sm-1 col-md-1 col-xs-1">
+                                        <img class="squarePic" src=@srcStr />
+                                    </div>
+                                }
+
+                            }
+                        }
+                        <div class="boardFrameColor col-md-1 col-sm-1 col-xs-1">
+                            <p class="frameTextVertical">@rowLabel[7 - i]</p>
+                        </div>
+                    </div>
+                }
+            }
+            
+            <div class="row">               
+                <div class="boardFrameColor col-md-offset-1 col-md-1 col-sm-offset-1 col-sm-1 col-xs-offset-1 col-xs-1">
+                    <p class="frameTextHorizontal">*</p>
+                </div>
+                @{
+                    for (int column = 1; column < 9; column++)
+                    {
+                        <div class="boardFrameColor col-md-1 col-sm-1 col-xs-1">
+                            <p class="frameTextHorizontal">@column</p>
+                        </div>
+                    }
+                }
+                <div class="boardFrameColor col-md-1 col-sm-1 col-xs-1">
+                    <p class="frameTextHorizontal">*</p>
+                </div>               
+            </div>
+            <br />
+            <br />
+            <br />
+        </div>
+    </div>
+</div>
+
+
+            <h2>Chess game: @Model.GameId Next player: @Model.NextPlayerColor</h2>
+
+            @{
+                if (Model.Checked == h2hBrainGames.GameRules.MoveResult.Checked)
+                {
+                    <h2 class="text-danger">@Model.NextPlayerColor king is CHECKED</h2>
+                }
+                if (Model.CheckMate == h2hBrainGames.GameRules.MoveResult.CheckMate)
+                {
+                    <h2 class="text-danger">@Model.NextPlayerColor is CHECKMATE</h2>
+                }
+            }
+
+
+            <div>
+                1  2   3  4 5 6 7 8
+                @{
+
+                    for (int i = 0; i < 8; i++)
+                    {
+                        <div style="background-color:aqua">
+                            @rowLabel[7 - i]
+                            @{
+                                for (int j = 0; j < 8; j++)
+                                {
+                                    var srcStr = "/Pics/ChessGame/";
+                                    srcStr += (Model.ChessSquare[7 - i, j].presentPiece).ToString();
+                                    srcStr += ".png";
+
+                                    if (Model.ChessSquare[7 - i, j].squareColor.ToString() == "Black")
+                                    {
+                                        <img class="blackSquarePicX" src=@srcStr />
+                                    }
+                                    else
+                                    {
+                                        <img class="whiteSquarePicX" src=@srcStr />
+                                    }
+                                }
+                            }
+                            @rowLabel[7 - i]
+                        </div>
+                                }
+                }
+                1  2   3  4 5 6 7 8
+            </div>
+
+            <h3 class="moveHeader">Make your move</h3>
+
+
+            <div class="positionVal">
+                <label for="oldPos">Select from:</label>
+                <input id="oldPos" name="From:" placeholder="A1 ..." />
+            </div>
+
+            <div class="positionVal">
+                <label for="newPos">Select to:</label>
+                <input id="newPos" name="To:" placeholder="A1 ..." />
+            </div>
+
+            <section>
+                <button class="gameButton" onclick="makeMove(@Model.GameId)">Move</button>
+            </section>
+
+            <section>
+                @*<button class="gameButton" onclick="refreshGame(@Model.GameId)">Refresh</button>*@
+
+                <button class="gameButton">@Html.ActionLink("Refresh", "RefreshGame", "ChessGames", new { gameId = Model.GameId }, null)</button>
+            </section>
+
+
+            <section>
+                <h3>Latest move</h3>
+                @{
+                    if (Model.QResult == h2hBrainGames.GameRules.MoveResult.Success)
+                    {
+                        <p id="outMess">From: @Model.MoveFrom To: @Model.MoveTo</p>
+                    }
+                }
+            </section>
+
+            <section>
+                <h3>Move progress message</h3>
+                <p id="outMess">
+                    @Model.QResult
+    </p>
+</section>
+
+@Html.ActionLink("ÅTERUPPTA PARTI 32", "PlayGame", "ChessGames", new { gameId = 32 }, null)
+
+@Html.ActionLink("ÅTERUPPTA PARTI 33", "PlayGame", "ChessGames", new { gameId = 33 }, null)
+
+@Html.ActionLink("ÅTERUPPTA PARTI 34", "PlayGame", "ChessGames", new { gameId = 34 }, null)
+
+<script>
+
+    function refreshGame(gameId) {
+        //alert("Refresh" + gameId);
+
+        var url = "/ChessGames/RefreshGame?gameId=" + gameId;
+        $.get(url);
+
+        //window.location = url;
+    }
+
+
+    function makeMove(gameId) {
+        var origin = document.getElementById("oldPos").value;
+        var destination = document.getElementById("newPos").value;
+        post("/ChessGames/PlayGame", { gameId: gameId, from: origin, to: destination });
+    }
+
+
+    function post(path, parameters) {
+        var form = $('<form></form>');
+
+        form.attr("method", "post");
+        form.attr("action", path);
+
+        $.each(parameters, function(key, value) {
+            var field = $('<input></input>');
+
+            field.attr("type", "hidden");
+            field.attr("name", key);
+            field.attr("value", value);
+
+            form.append(field);
+        });
+
+        // The form needs to be a part of the document.
+        $(document.body).append(form);
+        form.submit();
+    }
+
+</script>

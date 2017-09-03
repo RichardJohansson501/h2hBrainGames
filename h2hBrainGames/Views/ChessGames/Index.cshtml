@@ -1,0 +1,10 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Chess Game Index Page</h2>
+
+@Html.ActionLink("STARTA NYTT PARTI", "NewGame", "ChessGames", new { player1Id = "", player2Id = "" }, null)
+
+@Html.ActionLink("ÅTERUPPTA PARTI 33", "PlayGame", "ChessGames", new { gameId = 33 }, null)
