@@ -85,5 +85,53 @@ namespace h2hBrainGames.Controllers
             viewModel.MoveTo = to;
             return View(viewModel);
         }
+
+
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public JsonResult PlayDraw([Bind(Include = "gameId, from, to")] int? gameId, string from, string to)
+        {
+            //if ((gameId == null) || (gameId == 0))
+            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+
+            // "from" and "to" parameters are expected to be in format XN, e.g. A1, C3 etc
+            from = from.ToUpper();
+            to = to.ToUpper();
+            var fromRow = (int)(from.First() - 'A');
+            var fromCol = (int)(from.Last() - '1');
+            var toRow = (int)(to.First() - 'A');
+            var toCol = (int)(to.Last() - '1');
+            var drawChessPiece = ChessGameRepo.RetrieveChessPiece((int) gameId, fromRow, fromCol);
+
+            ChessGame game = ChessGameRepo.RetrieveGame((int)gameId);
+
+            var qResult = ChessGameRules.QualifyMove(game.Id, fromRow, fromCol, toRow, toCol, game.NextPlayerColor);
+            if (qResult == MoveResult.Success)
+            {
+                qResult = ChessGameRules.QualifyNotSelfChecked(game.Id, fromRow, fromCol, toRow, toCol, game.NextPlayerColor);
+            }
+
+            if (qResult == MoveResult.Success)
+            {
+                ChessGameRepo.UpdateGame(game, fromRow, fromCol, toRow, toCol);
+            }
+
+            ChessDrawReply viewModel = new ChessDrawReply(game);
+            viewModel.QResult = qResult.ToString();
+            viewModel.MoveFrom = from;
+            viewModel.MoveTo = to;
+            if (qResult == MoveResult.Success)
+            {
+                if (drawChessPiece.Color == Color.White)
+                {
+                    viewModel.PresentPiece = ((PresentPiece)((int)drawChessPiece.Piece + 6)).ToString();
+                }
+                else
+                {
+                    viewModel.PresentPiece = ((PresentPiece)drawChessPiece.Piece).ToString();
+                }
+            }
+            return Json(viewModel);
+        }
     }
 }

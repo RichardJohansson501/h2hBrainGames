@@ -19,9 +19,14 @@ namespace h2hBrainGames.GameRules
         MoveOnOwn,
         MovePatternErr,
         MovePathErr,
-        Strike,
+        SelfChecked,       
+    }
+
+    public enum CheckStatus
+    {
+        NotChecked,
         Checked,
-        SelfChecked,
+        NotCheckMate,
         CheckMate,
     }
 
@@ -335,7 +340,7 @@ namespace h2hBrainGames.GameRules
             return MoveResult.Success;
         }
 
-        public static MoveResult QualifyNotChecked(int gameId, Color nextPlayerColor)
+        public static CheckStatus QualifyNotChecked(int gameId, Color nextPlayerColor)
         {          
             var myKing = ChessGameRepo.RetrieveKingPiece(gameId, nextPlayerColor);
             
@@ -344,11 +349,11 @@ namespace h2hBrainGames.GameRules
                 otherPlayerColor = Color.Black;
             var otherPlayerPieces = ChessGameRepo.RetrieveChessPiecesOfColor(gameId, otherPlayerColor);
 
-            MoveResult result = MoveResult.Success;
+            CheckStatus result = CheckStatus.NotChecked;
             foreach (var piece in otherPlayerPieces)
             {
                 if (QualifyMove(gameId, piece.Row, piece.Column, myKing.Row, myKing.Column, otherPlayerColor) == MoveResult.Success)
-                    result = MoveResult.Checked;
+                    result = CheckStatus.Checked;
             }
 
             return result;
@@ -372,13 +377,9 @@ namespace h2hBrainGames.GameRules
 
             foreach (var piece in otherPlayerPieces)
             {
-                //if (!((piece.Row == toRow) && (piece.Column == toCol)))     // Check if piece should have been removed by draw
-                //{
-
                 // A temporarily moved chess piece will not qualify due to moving from outside the chess board
                 if (QualifyMove(gameId, piece.Row, piece.Column, myKing.Row, myKing.Column, otherPlayerColor) == MoveResult.Success)
                     testChecked = MoveResult.SelfChecked;
-                //}
             }
 
             // Roll-back of concerned chess piece
@@ -389,14 +390,11 @@ namespace h2hBrainGames.GameRules
             {
                 hitChessPiece = ChessGameRepo.UpdateChessPiece(gameId, -1, -1, toRow, toCol);
             }
-
             return testChecked;
         }
 
-        public static MoveResult QualifyNotCheckMate(int gameId, Color nextPlayerColor)
+        public static CheckStatus QualifyNotCheckMate(int gameId, Color nextPlayerColor)
         {
-            //MoveResult testChecked = MoveResult.CheckMate;
-
             // 1. Try to move the king to avoid being checked
             var myKing = ChessGameRepo.RetrieveKingPiece(gameId, nextPlayerColor);
 
@@ -409,10 +407,7 @@ namespace h2hBrainGames.GameRules
                         var result = QualifyNotSelfChecked(gameId, myKing.Row, myKing.Column, myKing.Row + rowAdj, myKing.Column + colAdj, nextPlayerColor);
                         if (result == MoveResult.Success)
                         {
-                            //testChecked = MoveResult.Success;
-                            //rowAdj = 2;     // Break loops
-                            //colAdj = 2;
-                            return MoveResult.Success;
+                            return CheckStatus.NotCheckMate;
                         }
                     }
                 }
@@ -437,8 +432,7 @@ namespace h2hBrainGames.GameRules
                 index++;
             }
             if (noOfCheckers > 1)       // If more than one, impossible to hit back or cover king. i.e. checkmate
-                //return testChecked;
-                return MoveResult.CheckMate;
+                return CheckStatus.CheckMate;
 
             // 3. Try to hit the single chess piece that checks the king or put own chess piece in between
             ChessPiece checker = otherPlayerPieces.ElementAt(checkerIndex);
@@ -465,19 +459,14 @@ namespace h2hBrainGames.GameRules
                     {
                         if (QualifyMove(gameId, piece.Row, piece.Column, row, col, nextPlayerColor) == MoveResult.Success)
                         {
-                            //testChecked = MoveResult.Success;
-                            //row = myKing.Row - rowStep;         // Break loop
-                            //col = myKing.Column - colStep;
-                            return MoveResult.Success;
+                            return CheckStatus.NotCheckMate;
                         }
                     }
                 }
                 row += rowStep;
                 col += colStep;
             }
-            
-            //return testChecked;
-            return MoveResult.CheckMate;
+            return CheckStatus.CheckMate;
         }
 
     }

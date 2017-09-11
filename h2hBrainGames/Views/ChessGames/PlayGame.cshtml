@@ -6,117 +6,99 @@
     string[] rowLabel = new string[] { "A", "B", "C", "D", "E", "F", "G", "H" };
 }
 
+@{
+    string statusMess = "No player is currently checked";
+
+    if (Model.Checked == h2hBrainGames.GameRules.CheckStatus.Checked)
+    {
+        statusMess = Model.NextPlayerColor + " king is checked";
+    }
+    if (Model.CheckMate == h2hBrainGames.GameRules.CheckStatus.CheckMate)
+    {
+        statusMess = Model.NextPlayerColor + " king is checkmate, game lost";
+    }
+}
+
 <div class="container">
     <div class="row">
         <div class="col-md-4">
-            <h4>Game info</h4>
+            <h3 class="gameInfo">Chess game information</h3>
+            
+            <div class="gameInfo">
+                <h4 class="gameInfoHeader">General</h4>
+                <p>Title: xxxxxx</p>
+                <p>Type: Online</p>
+                <p>Player: J. Kasparov (white)</p>
+                <p>Player: B. Fischer (black)</p>
+                <p>Game start:</p>
+                <p>Game end: ongoing</p>
+                <p>Max draw time:</p>
+                <p>Result: pending</p>
+            </div>
+            
+            <div class="gameInfo">
+                <h4 class="gameInfoHeader">Statistics</h4>
+                <p>White draws: 21</p>
+                <p>White draw time: </p>
+                <p>White losses:</p>
+                <p>Black draws: 20</p>
+                <p>Black draw time:</p>
+                <p>Black losses:</p>
+                <p>Latest draws:</p>
+                @{ 
+                    var playerColor = "black";
+                    if (Model.NextPlayerColor == h2hBrainGames.Models.Color.Black)
+                    {
+                        playerColor = "white";
+                    }
+                }
+                <p>- (@playerColor) From: @Model.MoveFrom To: @Model.MoveTo</p>
+                <p>- (black) 2 latest</p>
+                <p>- (white) 3 latest</p>
+                <p>- (black) 4 latest</p>
+                <p>Browse draw history  << (X)  >></p>
+            </div>
         </div>
-
-        <div style="background-color:blanchedalmond" class="col-md-8">
+        
+        <br /> 
+        <div class="gameBackground col-md-8">
             <br />
-            <br />
+            <div class="row">
+                <span>
+                    @*<span class="gameBackgroundText col-md-offset-1 col-md-3">@Model.NextPlayerColor to draw</span>*@
+                    <span id="next2Draw" class="gameBackgroundText col-md-offset-1 col-md-3"></span>
+                    <span class="gameBackgroundText col-md-5">Draw time:</span>
+                    <span class="gameBackgroundText">
+                        <button class="gameButton">@Html.ActionLink("Refresh", "RefreshGame", "ChessGames", new { gameId = Model.GameId }, null)</button>
+                    </span>
+                </span>
+            </div>
+           
             <br />
             <div class="row">             
-                <div class="boardFrameColor col-md-offset-1 col-md-1 col-sm-offset-1 col-sm-1 col-xs-offset-1 col-xs-1">
-                    <p class="frameTextHorizontal">*</p>
+                <div class="boardFrameColor squareSize boardFrameRadiusTL col-md-offset-1 col-md-1 col-sm-offset-1 col-sm-1 col-xs-offset-1 col-xs-1">
+                    <p class="frameText">*</p>
                 </div>
                 @{
                     for (int column = 1; column < 9; column++)
                     {
-                        <div class="boardFrameColor col-md-1 col-sm-1 col-xs-1">
-                            <p class="frameTextHorizontal">@column</p>
+                        <div class="boardFrameColor squareSize col-md-1 col-sm-1 col-xs-1">
+                            <p class="frameText">@column</p>
                         </div>
                     }
                 }
-                <div class="boardFrameColor col-md-1 col-sm-1 col-xs-1">
-                    <p class="frameTextHorizontal">*</p>
+                <div class="boardFrameColor squareSize boardFrameRadiusTR col-md-1 col-sm-1 col-xs-1">
+                    <p class="frameText">*</p>
                 </div>
-            </div>
-            
-            
-            @{
-                for (int i = 0; i < 8; i++)
-                {
-                    <div class="row">
-                        <div class="boardFrameColor col-md-offset-1 col-md-1 col-sm-offset-1 col-sm-1 col-xs-offset-1 col-xs-1">
-                            <p class="frameTextVertical">@rowLabel[7 - i]</p>
-                        </div>
-
-                        @{
-                            for (int j = 0; j < 8; j++)
-                            {
-                                var srcStr = "/Pics/ChessGame/";
-                                srcStr += (Model.ChessSquare[7 - i, j].presentPiece).ToString();
-                                srcStr += ".png";
-
-                                if (Model.ChessSquare[7 - i, j].squareColor.ToString() == "Black")
-                                {
-                                    <div class="blackSquareColor col-sm-1 col-md-1 col-xs-1">
-                                        <img class="squarePic" src=@srcStr />
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="whiteSquareColor col-sm-1 col-md-1 col-xs-1">
-                                        <img class="squarePic" src=@srcStr />
-                                    </div>
-                                }
-
-                            }
-                        }
-                        <div class="boardFrameColor col-md-1 col-sm-1 col-xs-1">
-                            <p class="frameTextVertical">@rowLabel[7 - i]</p>
-                        </div>
-                    </div>
-                }
-            }
-            
-            <div class="row">               
-                <div class="boardFrameColor col-md-offset-1 col-md-1 col-sm-offset-1 col-sm-1 col-xs-offset-1 col-xs-1">
-                    <p class="frameTextHorizontal">*</p>
-                </div>
+            </div>           
                 @{
-                    for (int column = 1; column < 9; column++)
-                    {
-                        <div class="boardFrameColor col-md-1 col-sm-1 col-xs-1">
-                            <p class="frameTextHorizontal">@column</p>
-                        </div>
-                    }
-                }
-                <div class="boardFrameColor col-md-1 col-sm-1 col-xs-1">
-                    <p class="frameTextHorizontal">*</p>
-                </div>               
-            </div>
-            <br />
-            <br />
-            <br />
-        </div>
-    </div>
-</div>
-
-
-            <h2>Chess game: @Model.GameId Next player: @Model.NextPlayerColor</h2>
-
-            @{
-                if (Model.Checked == h2hBrainGames.GameRules.MoveResult.Checked)
-                {
-                    <h2 class="text-danger">@Model.NextPlayerColor king is CHECKED</h2>
-                }
-                if (Model.CheckMate == h2hBrainGames.GameRules.MoveResult.CheckMate)
-                {
-                    <h2 class="text-danger">@Model.NextPlayerColor is CHECKMATE</h2>
-                }
-            }
-
-
-            <div>
-                1  2   3  4 5 6 7 8
-                @{
-
                     for (int i = 0; i < 8; i++)
                     {
-                        <div style="background-color:aqua">
-                            @rowLabel[7 - i]
+                        <div class="row">
+                            <div class="boardFrameColor squareSize col-md-offset-1 col-md-1 col-sm-offset-1 col-sm-1 col-xs-offset-1 col-xs-1">
+                                <p class="frameText">@rowLabel[7 - i]</p>
+                            </div>
+
                             @{
                                 for (int j = 0; j < 8; j++)
                                 {
@@ -124,63 +106,85 @@
                                     srcStr += (Model.ChessSquare[7 - i, j].presentPiece).ToString();
                                     srcStr += ".png";
 
+                                    string idStr = rowLabel[7 - i] + (j + 1).ToString();
+
                                     if (Model.ChessSquare[7 - i, j].squareColor.ToString() == "Black")
                                     {
-                                        <img class="blackSquarePicX" src=@srcStr />
+                                        <div id="@idStr" class="blackSquareColor squareSize col-sm-1 col-md-1 col-xs-1">
+                                            <img class="squarePic" src=@srcStr />
+                                            @*<img class="squarePic" />*@
+                                        </div>
                                     }
                                     else
                                     {
-                                        <img class="whiteSquarePicX" src=@srcStr />
+                                        <div id ="@idStr" class="whiteSquareColor squareSize col-sm-1 col-md-1 col-xs-1">
+                                            <img class="squarePic" src=@srcStr />
+                                        </div>
                                     }
                                 }
                             }
-                            @rowLabel[7 - i]
+
+                            <div class="boardFrameColor squareSize col-md-1 col-sm-1 col-xs-1">
+                                <p class="frameText">@rowLabel[7 - i]</p>
+                            </div>
                         </div>
-                                }
-                }
-                1  2   3  4 5 6 7 8
-            </div>
-
-            <h3 class="moveHeader">Make your move</h3>
-
-
-            <div class="positionVal">
-                <label for="oldPos">Select from:</label>
-                <input id="oldPos" name="From:" placeholder="A1 ..." />
-            </div>
-
-            <div class="positionVal">
-                <label for="newPos">Select to:</label>
-                <input id="newPos" name="To:" placeholder="A1 ..." />
-            </div>
-
-            <section>
-                <button class="gameButton" onclick="makeMove(@Model.GameId)">Move</button>
-            </section>
-
-            <section>
-                @*<button class="gameButton" onclick="refreshGame(@Model.GameId)">Refresh</button>*@
-
-                <button class="gameButton">@Html.ActionLink("Refresh", "RefreshGame", "ChessGames", new { gameId = Model.GameId }, null)</button>
-            </section>
-
-
-            <section>
-                <h3>Latest move</h3>
-                @{
-                    if (Model.QResult == h2hBrainGames.GameRules.MoveResult.Success)
-                    {
-                        <p id="outMess">From: @Model.MoveFrom To: @Model.MoveTo</p>
                     }
                 }
-            </section>
 
-            <section>
-                <h3>Move progress message</h3>
-                <p id="outMess">
-                    @Model.QResult
-    </p>
-</section>
+            <div class="row">               
+                <div class="boardFrameColor squareSize boardFrameRadiusBL col-md-offset-1 col-md-1 col-sm-offset-1 col-sm-1 col-xs-offset-1 col-xs-1">
+                    <p class="frameText">*</p>
+                </div>
+                @{
+                    for (int column = 1; column < 9; column++)
+                    {
+                        <div class="boardFrameColor squareSize col-md-1 col-sm-1 col-xs-1">
+                            <p class="frameText">@column</p>
+                        </div>
+                    }
+                }
+                <div class="boardFrameColor squareSize boardFrameRadiusBR col-md-1 col-sm-1 col-xs-1">
+                    <p class="frameText">*</p>
+                </div>               
+            </div>
+            <br />           
+            <div class="row">
+                <span>
+                    <span id="nextDraw" class="gameBackgroundText col-md-offset-1"></span>
+                    <span class="col-md-offset-1">
+                        <label class="gameBackgroundText" for="oldPos">from</label>
+                        <input class="gameDrawBox" id="oldPos" name="From:" size="3" placeholder="" />
+                    </span>
+                    <span class="col-md-offset-1">
+                        <label class="gameBackgroundText" for="newPos">to</label>
+                        <input class="gameDrawBox" id="newPos" name="To:" size="3" placeholder="" />
+                    </span>
+                    <span>
+                        <button class="gameButton col-md-offset-1" onclick="submitDraw(@Model.GameId)">Submit</button>
+                    </span>
+                </span>
+            </div>
+            <br />
+            <div class="row">
+                <div class="gameMessField col-md-offset-1 col-md-10">
+                    @*<p>Game status: @statusMess</p>*@
+                    @*<p>Draw message: @Model.QResult</p>*@
+                    <p id="drawMess"></p>
+                    <p id="gameStatus"></p>
+
+                </div>
+            </div>           
+            <br />
+        </div>
+       
+    </div>
+    
+</div>
+
+
+<br />
+<br />
+     
 
 @Html.ActionLink("ÅTERUPPTA PARTI 32", "PlayGame", "ChessGames", new { gameId = 32 }, null)
 
@@ -200,32 +204,101 @@
     }
 
 
-    function makeMove(gameId) {
+    //function makeDraw(gameId) {
+    //    var origin = document.getElementById("oldPos").value;
+    //    var destination = document.getElementById("newPos").value;
+    //    post("/ChessGames/PlayGame", { gameId: gameId, from: origin, to: destination });
+    //}
+
+    function submitDraw(gameId) {
         var origin = document.getElementById("oldPos").value;
         var destination = document.getElementById("newPos").value;
-        post("/ChessGames/PlayGame", { gameId: gameId, from: origin, to: destination });
-    }
 
+        //document.getElementById("drawMess").innerHTML = "Draw message: Draw is processed!"
+        document.getElementById("drawMess").innerHTML = "Message: " + mapDrawMess("Process");
 
-    function post(path, parameters) {
-        var form = $('<form></form>');
+        jQuery.post("/ChessGames/PlayDraw", { gameId: gameId, from: origin, to: destination }, function(result) {
+            
+            if (result.QResult == "Success")
+            {
+                document.getElementById(result.MoveFrom).innerHTML = '';
+                var srcStr = "/Pics/ChessGame/" + result.PresentPiece + ".png";
+                document.getElementById(result.MoveTo).innerHTML = '<img class="squarePic" src=' + srcStr + ' />';
 
-        form.attr("method", "post");
-        form.attr("action", path);
+                document.getElementById("oldPos").value = '';
+                document.getElementById("newPos").value = '';
+            }
 
-        $.each(parameters, function(key, value) {
-            var field = $('<input></input>');
+            document.getElementById("gameStatus").innerHTML = "Status: " + mapGameStatus(result.Status, result.NextPlayerColor);
+            document.getElementById("drawMess").innerHTML = "Message: " + mapDrawMess(result.QResult);
 
-            field.attr("type", "hidden");
-            field.attr("name", key);
-            field.attr("value", value);
-
-            form.append(field);
+            document.getElementById("next2Draw").innerHTML = result.NextPlayerColor + " to draw";
+            document.getElementById("nextDraw").innerHTML = result.NextPlayerColor + " draw:";
         });
-
-        // The form needs to be a part of the document.
-        $(document.body).append(form);
-        form.submit();
     }
+
+    function mapDrawMess(qResult) {
+        switch (qResult) {
+
+            case 'Process':  return "Processing draw, please wait";
+
+            case 'NoMove':  return "Invalid draw attempt to the original location";
+
+            case 'MoveFromOutside': return "Invalid draw attempt from a location outside the board";
+
+            case 'MoveToOutside' : return "Invalid draw attempt to a location outside the board";
+
+            case 'EmptySpot' : return "Invalid draw attempt from an empty board location";
+
+            case 'WrongTurn': return "Invalid draw attempt made by wrong player";
+
+            case 'MoveOnOwn': return "Invalid draw attempt to hit own chess piece";
+
+            case 'MovePatternErr': return "Invalid draw attempt to move against chess piece rules";
+
+            case 'MovePathErr': return "Invalid draw attempt to move against free path on board";
+
+            case 'SelfChecked': return "Invalid draw attempt causing state of checked"
+
+            case 'Success': return "Successful draw";
+
+            default: return "";    
+        }   
+    }
+
+    function mapGameStatus(status, color) {
+        switch (status) {
+
+            case 'NotChecked':  return "No player is currently checked";
+
+            case 'Checked':  return color + " king is checked";
+
+            case 'CheckMate': return color + " king is checkmate, game lost";
+
+            default: return "";    
+        }   
+    }
+
+
+    //function post(path, parameters) {
+    //    var form = $('<form></form>');
+
+    //    form.attr("method", "post");
+    //    form.attr("action", path);
+
+    //    $.each(parameters, function(key, value) {
+    //        var field = $('<input></input>');
+
+    //        field.attr("type", "hidden");
+    //        field.attr("name", key);
+    //        field.attr("value", value);
+
+    //        form.append(field);
+    //    });
+
+    //    // The form needs to be a part of the document.
+    //    $(document.body).append(form);
+    //    form.submit();
+    //}
 
 </script>

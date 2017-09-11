@@ -1,5 +1,6 @@
 ﻿using h2hBrainGames.GameRules;
 using h2hBrainGames.Models;
+using h2hBrainGames.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,8 +43,8 @@ namespace h2hBrainGames.ViewModels
         public string NextPlayer { get; set; }
         public Color NextPlayerColor { get; set; }
         public ChessSquare[,] ChessSquare { get; set; }
-        public MoveResult Checked { get; set; }
-        public MoveResult CheckMate { get; set; }
+        public CheckStatus Checked { get; set; }
+        public CheckStatus CheckMate { get; set; }
         public MoveResult QResult { get; set; }
         public string MoveFrom { get; set; }
         public string MoveTo { get; set; }
@@ -98,12 +99,33 @@ namespace h2hBrainGames.ViewModels
             }
 
             Checked = ChessGameRules.QualifyNotChecked(game.Id, game.NextPlayerColor);
-            if (Checked == MoveResult.Checked)
+            if (Checked == CheckStatus.Checked)
             {
                 CheckMate = ChessGameRules.QualifyNotCheckMate(game.Id, game.NextPlayerColor);
             }
         }
+    }
 
+    public class ChessDrawReply
+    {
+        public string Status { get; set; }
+        public string QResult { get; set; }
+        public string MoveFrom { get; set; }
+        public string MoveTo { get; set; }
+        public string PresentPiece { get; set; }
+        public string NextPlayerColor { get; set; }
 
+        public ChessDrawReply(ChessGame game)
+        {
+            var status = ChessGameRules.QualifyNotChecked(game.Id, game.NextPlayerColor);
+            Status = status.ToString();
+            if (status == CheckStatus.Checked)
+            {
+                status = ChessGameRules.QualifyNotCheckMate(game.Id, game.NextPlayerColor);
+                if (status == CheckStatus.CheckMate)
+                    Status = status.ToString();
+            }
+            NextPlayerColor = game.NextPlayerColor.ToString();
+        }
     }
 }

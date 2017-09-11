@@ -23,45 +23,67 @@ textarea {
     max-width: 280px;
 }
 
-/*.col-md-1{
-    margin-left:0px;
-}*/
-
-.blackSquarePic {
-    background-color:burlywood;   
-    width:200%;
-     /*width:192%;*/
-    /*height:inherit;*/
-    max-width:64px;
-    min-width:25px;
-    padding: 20% 20%;   
-    /*padding: 10px 10px;*/   
-    margin-left: -15px;
-    /*margin-right: -2px;*/
+.gameInfo{
+    background-color:blanchedalmond;
+    border-style:solid;
+    border-color:maroon;
+    border-width:10px;
+    border-radius:12px;
+    color:maroon;
+    padding: 14px 16px;
+    margin-bottom: 10px;   
 }
 
-.whiteSquarePic {
-    background-color:ghostwhite;    
-    width: 200%;
-    max-width:64px;
-    min-width:25px;
-    padding: 20% 20%;
-    /*padding: 10px 10px;*/   
-    margin-left: -15px;
-    /*margin-right: -2px;*/
+.gameInfoHeader{
+    background-color:burlywood;
+    padding: 8px 10px;
+    border-radius:8px;  
 }
 
+.gameBackground{
+    background-color:blanchedalmond;
+    border-style:solid;
+    border-color:maroon;
+    border-width:10px;
+    border-radius:12px;
+}
+
+.gameBackgroundText{
+    background-color:blanchedalmond;
+    color:maroon;
+    font-size:20px;
+    font-weight:normal;
+}
+
+.gameDrawBox{
+    margin-left:10px;
+    border-radius:8px;
+    color:maroon;
+    padding:4px 6px;
+}
+
+.gameMessField{
+    background-color:ghostwhite;
+    border-style:solid;
+    border-color:maroon;
+    border-radius:8px;
+    color:maroon;
+    font-size:16px;
+    padding: 8px 16px;
+}
 
 .squarePic {   
-    width:230%;
-     /*width:192%;*/
-    /*height:inherit;*/
-    max-width:64px;
-    min-width:25px;
-    padding: 20% 20%;   
-    /*padding: 10px 10px;*/   
-    margin-left: -15px;
-    /*margin-right: -2px;*/
+    position:absolute;
+    top:10%;
+    bottom: 0;
+    left: 10%;
+    right: 0;
+    width: 80%;
+}
+
+.squareSize{
+    position:relative;
+    padding-top:8.333%;
 }
 
 .blackSquareColor{
@@ -73,70 +95,35 @@ textarea {
 }
 
 .boardFrameColor{
-    background-color:maroon;
+    background-color:maroon; 
+}
+
+.boardFrameRadiusTL{
+    border-top-left-radius: 20px;
+}
+
+.boardFrameRadiusTR{
+    border-top-right-radius: 20px;
+}
+
+.boardFrameRadiusBL{
+    border-bottom-left-radius: 20px;
+}
+
+.boardFrameRadiusBR{
+    border-bottom-right-radius: 20px;
+}
+
+.frameText {
+    position:absolute;
+    top: 35%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    /*font-size:100%;*/
+    text-align:center;
+    color:ghostwhite;  
     
-}
-
-.frameTextHorizontal {
-    text-align:center;
-    font-size:14px;
-    color:ghostwhite;  
-    width: 200%;
-    max-width:64px;
-    padding-top: 20px;   
-    padding-bottom: 20px;
-    margin-left: -15px;
-    margin-top: 0px;
-    margin-bottom: 0px;   
-}
-
-.frameTextVertical {
-    text-align:center;
-    font-size:14px;
-    color:ghostwhite;  
-    width: 200%;
-    max-width:64px;
-    min-width:25px;
-    /*height:200%;
-    max-height:64px;
-    min-height:25px;*/
-    padding-top: 14px;   
-    padding-bottom: 14px; 
-    margin-left: -15px;
-    margin-top: 6px;
-}
-
-/*.frameTextBelow {
-    text-align:center;
-    font-size:14px;
-    color:ghostwhite;  
-    width: 192%;
-    max-width:70px;
-    padding-top: 20px;   
-    padding-bottom: 20px;
-    margin-left: -15px;
-    margin-top: 0px;
-    margin-bottom: 0px;  
-}*/
-
-.blackSquarePicX {
-    background-color:maroon;
-    /*margin-top: 20px;
-    margin-bottom: 30px;*/
-    width: 6%;
-    height: 6%;
-    /*margin-left: 30px;*/
-    padding: 10px 10px;
-}
-
-.whiteSquarePicX {
-    background-color:ghostwhite;
-    /*margin-top: 20px;
-    margin-bottom: 30px;*/
-    width: 6%;
-    height: 6%;
-    /*margin-left: 30px;*/
-    padding: 10px 10px;
 }
 
 .introHeader {
@@ -157,5 +144,10 @@ input[type=string], select {
 }
 
 .gameButton {
-    background-color: aquamarine;
+    background-color: burlywood;
+    border-style:solid;
+    border-color:maroon;
+    border-radius: 8px;
+    font-size: 16px;
+    color:maroon;
 }
